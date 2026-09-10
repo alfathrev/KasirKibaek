@@ -4,14 +4,20 @@ export const LINE_WIDTH = 32;
 
 /**
  * Pads a string with spaces to a given length.
- * direction: 'left' (right-align text) or 'right' (left-align text)
+ * direction: 'left' (right-align text), 'right' (left-align text), or 'center' (center text)
  */
 export const padString = (str, length, direction = 'right') => {
   const s = String(str ?? '');
   if (s.length >= length) {
     return s.slice(0, length);
   }
-  const spaces = ' '.repeat(length - s.length);
+  const totalSpaces = length - s.length;
+  if (direction === 'center') {
+    const leftSpaces = Math.floor(totalSpaces / 2);
+    const rightSpaces = totalSpaces - leftSpaces;
+    return ' '.repeat(leftSpaces) + s + ' '.repeat(rightSpaces);
+  }
+  const spaces = ' '.repeat(totalSpaces);
   return direction === 'left' ? spaces + s : s + spaces;
 };
 
@@ -73,6 +79,15 @@ export const generateReceiptText = (customerName, cartItems, printDate = null, u
   const remainingSpace = LINE_WIDTH - label.length;
   const rightPaddedTotal = padString(grandTotalFormatted, remainingSpace, 'left');
   lines.push(`${label}${rightPaddedTotal}`);
+  lines.push(divider);
+
+  // Bottom Footer Messages (Sesuai permintaan)
+  lines.push('');
+  lines.push(padString('Maturnuwun', LINE_WIDTH, 'center'));
+  lines.push('');
+  lines.push(padString('Semoga Kita Selalu Diberi', LINE_WIDTH, 'center'));
+  lines.push(padString('Kesehatan, Rejekinya Lancar', LINE_WIDTH, 'center'));
+  lines.push(padString('Dan Umur Yang Barokah', LINE_WIDTH, 'center'));
 
   return lines.join('\n');
 };
@@ -93,7 +108,7 @@ export const createEscPosBuffer = (customerName, cartItems, realtimeDate, useKNo
   
   // Convert text string to bytes
   const encoder = new TextEncoder();
-  const textBytes = encoder.encode(receiptText + '\n\n\n\n'); // Add feed lines
+  const textBytes = encoder.encode(receiptText + '\n\n\n\n\n'); // Add feed lines
 
   const feedCut = [
     ESC, 0x64, 0x03, // ESC d 3 (Feed 3 lines)
