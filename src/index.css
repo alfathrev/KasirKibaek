@@ -19,6 +19,27 @@
   }
 }
 
+/* Explicit solid color classes to guarantee no transparency bugs */
+.bg-forest {
+  background-color: #013E37 !important;
+}
+.text-forest {
+  color: #013E37 !important;
+}
+.border-forest {
+  border-color: #013E37 !important;
+}
+
+.bg-butter {
+  background-color: #FFEFB3 !important;
+}
+.text-butter {
+  color: #FFEFB3 !important;
+}
+.border-butter {
+  border-color: #FFEFB3 !important;
+}
+
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }

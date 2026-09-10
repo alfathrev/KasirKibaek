@@ -52,8 +52,11 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-butter text-forest antialiased selection:bg-forest selection:text-butter">
-      {/* Top Navbar dengan Tombol Keranjang Lengket */}
+    <div 
+      className="min-h-screen antialiased selection:bg-[#013E37] selection:text-[#FFEFB3]"
+      style={{ backgroundColor: '#FFEFB3', color: '#013E37' }}
+    >
+      {/* Top Navbar dengan Solid Forest Green (Anti-Transparan & Anti-Tertutup Keyboard) */}
       <Navbar
         cartItems={cartItems}
         onOpenCart={() => setIsCartOpen(true)}

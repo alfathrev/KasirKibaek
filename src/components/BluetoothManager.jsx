@@ -38,41 +38,41 @@ export default function BluetoothManager({
   };
 
   return (
-    <div className="bg-forest rounded-3xl p-4 shadow-lg border border-forest-700 text-butter">
+    <div 
+      className="rounded-3xl p-4 shadow-lg border border-[#0A524A] text-[#FFEFB3]"
+      style={{ backgroundColor: '#013E37' }}
+    >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         {/* Status Indikator */}
         <div className="flex items-center space-x-3">
-          <div className={`w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 transition-all ${
-            isConnected
-              ? 'bg-butter text-forest shadow-sm'
-              : isConnecting
-              ? 'bg-butter/20 text-butter animate-pulse ring-2 ring-butter/40'
-              : 'bg-forest-700 text-butter/60'
-          }`}>
+          <div 
+            className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 transition-all shadow-sm"
+            style={{ 
+              backgroundColor: isConnected ? '#FFEFB3' : '#002B26',
+              color: isConnected ? '#013E37' : '#FFEFB3'
+            }}
+          >
             {isConnected ? (
               <BluetoothConnected className="w-5 h-5" />
             ) : isConnecting ? (
-              <BluetoothSearching className="w-5 h-5 animate-spin" />
+              <BluetoothSearching className="w-5 h-5 animate-spin text-[#FFEFB3]" />
             ) : (
-              <Bluetooth className="w-5 h-5" />
+              <Bluetooth className="w-5 h-5 text-[#FFEFB3]" />
             )}
           </div>
 
           <div className="min-w-0">
             <div className="flex items-center space-x-2">
-              <span className="text-xs font-bold text-butter">
+              <span className="text-xs font-bold text-[#FFEFB3]">
                 Printer Thermal (58mm)
               </span>
-              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase ${
-                isConnected
-                  ? 'bg-butter/20 text-butter border border-butter/30'
-                  : isConnecting
-                  ? 'bg-amber-400/20 text-amber-300 border border-amber-400/30'
-                  : 'bg-forest-700 text-butter/60 border border-forest-600'
-              }`}>
+              <span 
+                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase border border-[#FFEFB3]/30"
+                style={{ backgroundColor: '#002B26', color: '#FFEFB3' }}
+              >
                 {isConnected ? (
                   <>
-                    <span className="w-1.5 h-1.5 rounded-full bg-butter mr-1.5 animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FFEFB3] mr-1.5 animate-pulse" />
                     Terhubung
                   </>
                 ) : isConnecting ? (
@@ -83,7 +83,7 @@ export default function BluetoothManager({
               </span>
             </div>
 
-            <p className="text-xs text-butter/70 truncate mt-0.5 font-medium">
+            <p className="text-xs text-[#FFEFB3]/75 truncate mt-0.5 font-medium">
               {isConnected
                 ? (device?.name || 'Printer Bluetooth Siap')
                 : (pairedDevice ? `Tersimpan: ${pairedDevice.name || 'Printer Bluetooth'}` : 'Klik cari printer untuk menghubungkan')}
@@ -101,9 +101,9 @@ export default function BluetoothManager({
             <button
               type="button"
               onClick={handleDisconnect}
-              className="inline-flex items-center px-3.5 py-2 text-xs font-semibold text-butter bg-forest-700 hover:bg-forest-600 rounded-2xl transition-colors border border-forest-600"
+              className="inline-flex items-center px-3.5 py-2 text-xs font-semibold text-[#FFEFB3] bg-[#002B26] hover:bg-[#001D19] rounded-2xl transition-colors border border-[#0A524A]"
             >
-              <Unlink className="w-3.5 h-3.5 mr-1.5 text-butter/70" />
+              <Unlink className="w-3.5 h-3.5 mr-1.5 text-[#FFEFB3]/70" />
               Putuskan
             </button>
           ) : (
@@ -113,9 +113,10 @@ export default function BluetoothManager({
                   type="button"
                   onClick={handleReconnect}
                   disabled={isConnecting}
-                  className="inline-flex items-center px-3.5 py-2 text-xs font-bold text-forest bg-butter-200 hover:bg-butter active:bg-butter-400 rounded-2xl transition-colors shadow-sm"
+                  className="inline-flex items-center px-3.5 py-2 text-xs font-bold rounded-2xl transition-colors shadow-sm"
+                  style={{ backgroundColor: '#FFF2C4', color: '#013E37' }}
                 >
-                  <RefreshCw className={`w-3.5 h-3.5 mr-1.5 text-forest ${isConnecting ? 'animate-spin' : ''}`} />
+                  <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${isConnecting ? 'animate-spin' : ''}`} />
                   Sambungkan Ulang
                 </button>
               )}
@@ -124,7 +125,8 @@ export default function BluetoothManager({
                 type="button"
                 onClick={handleSearchNew}
                 disabled={isConnecting}
-                className="inline-flex items-center px-4 py-2.5 text-xs font-black text-forest bg-butter hover:bg-butter-400 active:scale-95 rounded-2xl transition-all shadow-md shadow-forest-950/20 cursor-pointer"
+                className="inline-flex items-center px-4 py-2.5 text-xs font-black active:scale-95 rounded-2xl transition-all shadow-md cursor-pointer"
+                style={{ backgroundColor: '#FFEFB3', color: '#013E37' }}
               >
                 <Bluetooth className="w-3.5 h-3.5 mr-1.5" />
                 Cari Printer Baru
