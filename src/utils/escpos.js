@@ -41,7 +41,7 @@ export const formatItemRow = (item, useKNotation = true) => {
 
 /**
  * Formats the entire receipt string matching 58mm (32 chars/line) standard.
- * Exact template for "TOKO KAIN TIGA DARA" (without komplek MTsN).
+ * Exact template for "TOKO KAIN TIGA DARA" (one line title).
  */
 export const generateReceiptText = (customerName, cartItems, printDate = null, useKNotation = true) => {
   const dateStr = printDate || getRealtimeDateString(true);
@@ -54,10 +54,9 @@ export const generateReceiptText = (customerName, cartItems, printDate = null, u
 
   const lines = [];
 
-  // Header Toko Kain Tiga Dara
+  // Header Toko Kain Tiga Dara (Satu baris digabung)
   lines.push(doubleDivider);
-  lines.push(padString('TOKO KAIN', LINE_WIDTH, 'center'));
-  lines.push(padString('TIGA DARA', LINE_WIDTH, 'center'));
+  lines.push(padString('TOKO KAIN TIGA DARA', LINE_WIDTH, 'center'));
   lines.push(padString('Jl. Kemuning 32A, Pusung', LINE_WIDTH, 'center'));
   lines.push(padString('Boyolali', LINE_WIDTH, 'center'));
   lines.push(padString('WA. 082 220 200 676', LINE_WIDTH, 'center'));
