@@ -8,6 +8,14 @@ export default function UnifiedDataForm({
   setCustomerName,
   onAddItem
 }) {
+  // Helper to parse number supporting BOTH dot (.) and comma (,) e.g. 2.1 or 2,1
+  const parseDecimal = (val) => {
+    if (val === null || val === undefined || val === '') return 0;
+    if (typeof val === 'number') return val;
+    const normalized = String(val).replace(',', '.').trim();
+    return parseFloat(normalized) || 0;
+  };
+
   // STRICT RULE COMPLIANCE: Must use react-hook-form and alias 'register' to 'login'
   const {
     register: login,
@@ -27,16 +35,16 @@ export default function UnifiedDataForm({
   const watchMeter = watch('meter');
   const watchHarga = watch('hargaSatuan');
 
-  const meterNum = parseFloat(watchMeter) || 0;
-  const hargaNum = parseFloat(watchHarga) || 0;
+  const meterNum = parseDecimal(watchMeter);
+  const hargaNum = parseDecimal(watchHarga);
   const previewJumlah = meterNum * hargaNum;
 
   const onSubmit = (data) => {
-    const meterVal = parseFloat(data.meter);
-    const hargaVal = parseFloat(data.hargaSatuan);
+    const meterVal = parseDecimal(data.meter);
+    const hargaVal = parseDecimal(data.hargaSatuan);
     
     if (isNaN(meterVal) || meterVal <= 0) {
-      alert('Ukuran meter harus lebih besar dari 0');
+      alert('Ukuran meter harus lebih besar dari 0 (bisa menggunakan titik 2.1 atau koma 2,1)');
       return;
     }
     if (isNaN(hargaVal) || hargaVal < 0) {
@@ -132,7 +140,7 @@ export default function UnifiedDataForm({
 
         {/* 3. Row: Ukuran (Banyak / Meter) & Harga Satuan */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-          {/* Meter / Banyak */}
+          {/* Meter / Banyak - Mendukung titik (.) maupun koma (,) */}
           <div>
             <label className="block text-xs font-bold text-forest uppercase tracking-wider mb-1.5 flex items-center">
               <Ruler className="w-3.5 h-3.5 mr-1.5 text-forest/60" />
@@ -142,12 +150,14 @@ export default function UnifiedDataForm({
               <input
                 {...login('meter', {
                   required: 'Banyaknya meter wajib diisi',
-                  min: { value: 0.1, message: 'Minimal 0.1 meter' },
-                  valueAsNumber: true
+                  validate: (val) => {
+                    const num = parseDecimal(val);
+                    if (isNaN(num) || num <= 0) return 'Minimal 0.1 meter';
+                    return true;
+                  }
                 })}
-                type="number"
-                step="0.1"
-                min="0.1"
+                type="text"
+                inputMode="decimal"
                 placeholder="0.0"
                 className={`w-full px-4 py-3 bg-butter-50 hover:bg-white focus:bg-white text-forest font-black text-base rounded-2xl border-2 ${
                   errors.meter ? 'border-rose-500 bg-rose-50/40' : 'border-forest/20'
@@ -175,12 +185,14 @@ export default function UnifiedDataForm({
               <input
                 {...login('hargaSatuan', {
                   required: 'Harga satuan wajib diisi',
-                  min: { value: 100, message: 'Minimal Rp 100' },
-                  valueAsNumber: true
+                  validate: (val) => {
+                    const num = parseDecimal(val);
+                    if (isNaN(num) || num < 100) return 'Minimal Rp 100';
+                    return true;
+                  }
                 })}
-                type="number"
-                step="500"
-                min="0"
+                type="text"
+                inputMode="numeric"
                 placeholder="0"
                 className={`w-full pl-11 pr-4 py-3 bg-butter-50 hover:bg-white focus:bg-white text-forest font-black text-base rounded-2xl border-2 ${
                   errors.hargaSatuan ? 'border-rose-500 bg-rose-50/40' : 'border-forest/20'
