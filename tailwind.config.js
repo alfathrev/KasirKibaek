@@ -17,7 +17,7 @@ export default {
           200: '#fecdd6',
           300: '#fea3b4',
           400: '#fc708c',
-          500: '#ff3b5c', // Main brand coral pink/red matching reference
+          500: '#ff3b5c',
           600: '#e62446',
           700: '#c21534',
           800: '#a1152f',

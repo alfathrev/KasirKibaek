@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, RotateCcw, Trash2, Printer, Scissors, FileText, ChevronDown, ChevronUp } from 'lucide-react';
+import { X, Trash2, Printer, Scissors, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { formatRupiah, formatNumber, formatMeter, getRealtimeDateString } from '../utils/formatters';
 import { generateReceiptText, createEscPosBuffer } from '../utils/escpos';
 
@@ -59,14 +59,14 @@ export default function CartModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/70 backdrop-blur-sm animate-fadeIn">
       {/* Modal / Bottom Sheet */}
       <div 
-        className="w-full max-w-lg bg-white rounded-t-[32px] sm:rounded-3xl shadow-2xl flex flex-col max-h-[90vh] sm:max-h-[85vh] overflow-hidden border border-slate-100"
+        className="w-full max-w-lg bg-white rounded-t-[32px] sm:rounded-3xl shadow-2xl flex flex-col max-h-[90vh] sm:max-h-[85vh] overflow-hidden border border-slate-200"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header matching reference */}
-        <div className="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between">
+        {/* Header */}
+        <div className="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between bg-white">
           <div>
             <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
               Daftar Belanja
@@ -85,7 +85,7 @@ export default function CartModal({
                     onClearCart();
                   }
                 }}
-                className="text-xs font-semibold text-slate-400 hover:text-rose-600 transition-colors"
+                className="text-xs font-bold text-rose-500 hover:text-rose-700 bg-rose-50 px-2.5 py-1.5 rounded-xl transition-colors"
               >
                 Reset
               </button>
@@ -101,8 +101,8 @@ export default function CartModal({
           </div>
         </div>
 
-        {/* List of Cart Items matching reference card styling */}
-        <div className="p-4 sm:p-6 overflow-y-auto flex-1 space-y-3.5">
+        {/* List of Cart Items */}
+        <div className="p-4 sm:p-6 overflow-y-auto flex-1 space-y-3 bg-slate-50/50">
           {cartItems.length === 0 ? (
             <div className="py-12 text-center text-slate-400">
               <p className="font-bold text-slate-600">Keranjang Kosong</p>
@@ -116,7 +116,7 @@ export default function CartModal({
               >
                 {/* Left: Icon & Name */}
                 <div className="flex items-center space-x-3.5 min-w-0 flex-1">
-                  <div className="w-11 h-11 rounded-2xl bg-amber-100/80 text-amber-800 flex items-center justify-center flex-shrink-0 font-bold">
+                  <div className="w-11 h-11 rounded-2xl bg-amber-100/90 text-amber-800 flex items-center justify-center flex-shrink-0 font-bold">
                     <Scissors className="w-5 h-5 text-amber-700" />
                   </div>
 
@@ -125,7 +125,7 @@ export default function CartModal({
                       {item.namaKain}
                     </h4>
                     <p className="text-xs text-slate-500 font-medium mt-0.5">
-                      Rp {formatNumber(item.hargaSatuan)} / m
+                      Rp {formatNumber(item.hargaSatuan)} / meter
                     </p>
                   </div>
                 </div>
@@ -145,7 +145,7 @@ export default function CartModal({
                   <button
                     type="button"
                     onClick={() => onRemoveItem(item.id)}
-                    className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
+                    className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
                     title="Hapus"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -161,7 +161,7 @@ export default function CartModal({
               <button
                 type="button"
                 onClick={() => setShowReceiptPreview(!showReceiptPreview)}
-                className="w-full py-2.5 px-4 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-2xl flex items-center justify-between transition-colors"
+                className="w-full py-2.5 px-4 text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-2xl flex items-center justify-between transition-colors shadow-2xs"
               >
                 <span className="flex items-center">
                   <FileText className="w-3.5 h-3.5 mr-2 text-slate-500" />
@@ -171,7 +171,7 @@ export default function CartModal({
               </button>
 
               {showReceiptPreview && (
-                <div className="mt-2.5 p-4 bg-slate-900 text-slate-100 rounded-2xl font-mono text-[11px] leading-relaxed overflow-x-auto select-all">
+                <div className="mt-2.5 p-4 bg-slate-950 text-emerald-400 rounded-2xl font-mono text-[11px] leading-relaxed overflow-x-auto select-all shadow-inner border border-slate-800">
                   <pre>{receiptPreviewText}</pre>
                 </div>
               )}
@@ -179,26 +179,26 @@ export default function CartModal({
           )}
         </div>
 
-        {/* Bottom Bar matching reference */}
+        {/* Bottom Bar */}
         {cartItems.length > 0 && (
           <div className="p-5 sm:p-6 border-t border-slate-100 bg-white space-y-4">
             <div className="flex items-center justify-between text-sm font-bold text-slate-800">
-              <span className="text-slate-600">Total Menu ({cartItems.length})</span>
-              <span className="text-lg font-black text-slate-900">{formatRupiah(grandTotal)}</span>
+              <span className="text-slate-600">Total ({cartItems.length} Kain • {formatMeter(totalMeters)}m)</span>
+              <span className="text-xl font-black text-rose-600">{formatRupiah(grandTotal)}</span>
             </div>
 
-            {/* Red/Coral CTA Button matching reference */}
+            {/* Red/Rose CTA Button */}
             <button
               type="button"
               onClick={handlePrint}
               disabled={isPrinting}
-              className={`w-full py-4 px-4 rounded-2xl font-extrabold text-base flex items-center justify-center space-x-2 transition-all cursor-pointer shadow-lg shadow-coral-500/30 ${
+              className={`w-full py-4 px-4 rounded-2xl font-black text-base sm:text-lg flex items-center justify-center space-x-2 transition-all cursor-pointer shadow-xl ${
                 isPrinting
                   ? 'bg-amber-600 text-white animate-pulse'
-                  : 'bg-coral-500 hover:bg-coral-600 active:bg-coral-700 text-white'
+                  : 'bg-gradient-to-r from-rose-500 via-rose-600 to-rose-500 hover:from-rose-600 hover:to-rose-700 active:scale-[0.99] text-white shadow-rose-500/35'
               }`}
             >
-              <Printer className="w-5 h-5" />
+              <Printer className="w-5 h-5 stroke-[2.5]" />
               <span>
                 {isPrinting ? 'Mencetak Nota...' : `Cetak Nota ${formatRupiah(grandTotal)}`}
               </span>

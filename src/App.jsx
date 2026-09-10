@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useBluetoothPrinter } from './hooks/useBluetoothPrinter';
+import Navbar from './components/Navbar';
 import BluetoothManager from './components/BluetoothManager';
 import UnifiedDataForm from './components/UnifiedDataForm';
-import FloatingCartBar from './components/FloatingCartBar';
+import InPageCartSummary from './components/InPageCartSummary';
 import CartModal from './components/CartModal';
 import Toast from './components/Toast';
 
 export default function App() {
-  // 1. Customer & Cart State (DIKOSONGKAN saat refresh/load awal sesuai permintaan)
+  // 1. Customer & Cart State (Default kosong murni)
   const [customerName, setCustomerName] = useState('');
   const [cartItems, setCartItems] = useState([]);
 
@@ -51,9 +52,16 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100/90 text-slate-800 pb-28 pt-3 sm:pt-6 px-3 sm:px-6">
-      <div className="max-w-xl mx-auto space-y-4">
-        
+    <div className="min-h-screen bg-slate-950 text-slate-100 antialiased selection:bg-rose-500 selection:text-white">
+      {/* Top Navbar dengan Tombol Keranjang Lengket (Aman 100% dari keyboard HP) */}
+      <Navbar
+        cartItems={cartItems}
+        onOpenCart={() => setIsCartOpen(true)}
+        bluetoothState={bluetoothState}
+      />
+
+      {/* Main Content Area */}
+      <main className="max-w-xl mx-auto px-4 py-5 space-y-4 pb-20">
         {/* Status Koneksi Bluetooth */}
         <BluetoothManager
           bluetoothState={bluetoothState}
@@ -67,13 +75,13 @@ export default function App() {
           onAddItem={handleAddItem}
         />
 
-      </div>
-
-      {/* Floating Bottom Bar (Muncul saat ada item di keranjang) */}
-      <FloatingCartBar
-        cartItems={cartItems}
-        onOpenCart={() => setIsCartOpen(true)}
-      />
+        {/* Ringkasan Keranjang Langsung di Halaman (Mudah dilihat setelah tambah barang) */}
+        <InPageCartSummary
+          cartItems={cartItems}
+          onRemoveItem={handleRemoveItem}
+          onOpenCart={() => setIsCartOpen(true)}
+        />
+      </main>
 
       {/* Modal / Bottom Sheet Keranjang & Cetak Nota */}
       <CartModal
