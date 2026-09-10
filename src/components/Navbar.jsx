@@ -17,16 +17,16 @@ export default function Navbar({
         {/* Logo & Brand */}
         <div className="flex items-center space-x-2.5">
           <div 
-            className="w-9 h-9 rounded-2xl flex items-center justify-center font-black text-sm shadow-sm"
+            className="w-10 h-10 rounded-2xl flex items-center justify-center font-black text-xs shadow-sm tracking-wider"
             style={{ backgroundColor: '#FFEFB3', color: '#013E37' }}
           >
-            FK
+            TD
           </div>
           <div>
-            <h1 className="text-lg font-black tracking-tight leading-none text-[#FFEFB3]">
-              Flash<span className="text-[#F5DE8C] font-semibold">Kasir</span>
+            <h1 className="text-base sm:text-lg font-black tracking-tight leading-none text-[#FFEFB3]">
+              Toko Kain <span className="text-[#F5DE8C]">Tiga Dara</span>
             </h1>
-            <p className="text-[11px] text-[#FFEFB3]/75 font-medium mt-0.5">Toko Kain</p>
+            <p className="text-[11px] text-[#FFEFB3]/75 font-medium mt-0.5">Boyolali • POS Kasir</p>
           </div>
         </div>
 
@@ -36,7 +36,7 @@ export default function Navbar({
             <button
               type="button"
               onClick={onOpenCart}
-              className="flex items-center space-x-2 active:scale-95 py-2 px-4 rounded-2xl font-black text-xs shadow-md transition-all cursor-pointer animate-fadeIn"
+              className="flex items-center space-x-2 active:scale-95 py-2 px-3.5 sm:px-4 rounded-2xl font-black text-xs shadow-md transition-all cursor-pointer animate-fadeIn"
               style={{ backgroundColor: '#FFEFB3', color: '#013E37' }}
               title="Lihat Keranjang & Cetak Nota"
             >

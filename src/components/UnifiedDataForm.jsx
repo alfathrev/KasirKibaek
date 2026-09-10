@@ -69,14 +69,14 @@ export default function UnifiedDataForm({
       {/* Header Form */}
       <div className="flex items-center justify-between mb-5 pb-4 border-b border-forest/10">
         <div className="flex items-center space-x-3">
-          <div className="w-11 h-11 rounded-2xl bg-forest text-butter flex items-center justify-center font-black text-lg shadow-md shadow-forest/20">
-            FK
+          <div className="w-11 h-11 rounded-2xl bg-forest text-butter flex items-center justify-center font-black text-sm shadow-md shadow-forest/20 tracking-wider">
+            TD
           </div>
           <div>
             <h2 className="text-xl font-black text-forest tracking-tight">
               Masukkan Data
             </h2>
-            <p className="text-xs text-forest/70 font-medium">Data transaksi potongan kain</p>
+            <p className="text-xs text-forest/70 font-medium">Toko Kain Tiga Dara • Boyolali</p>
           </div>
         </div>
 
@@ -92,7 +92,7 @@ export default function UnifiedDataForm({
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* 1. Input: Nama Pelanggan / Toko (NO contoh-contoh text) */}
+        {/* 1. Input: Nama Pelanggan / Toko */}
         <div>
           <label className="block text-xs font-bold text-forest uppercase tracking-wider mb-1.5 flex items-center">
             <User className="w-3.5 h-3.5 mr-1.5 text-forest/60" />
@@ -107,19 +107,19 @@ export default function UnifiedDataForm({
           />
         </div>
 
-        {/* 2. Input: Nama Kain (NO contoh-contoh text) */}
+        {/* 2. Input: Nama Kain */}
         <div>
           <label className="block text-xs font-bold text-forest uppercase tracking-wider mb-1.5 flex items-center">
             <Scissors className="w-3.5 h-3.5 mr-1.5 text-forest/60" />
-            Nama Kain <span className="text-rose-600 ml-1">*</span>
+            Nama Barang <span className="text-rose-600 ml-1">*</span>
           </label>
           <input
             {...login('namaKain', {
-              required: 'Nama kain wajib diisi',
+              required: 'Nama barang wajib diisi',
               minLength: { value: 2, message: 'Minimal 2 karakter' }
             })}
             type="text"
-            placeholder="Jenis atau nama kain"
+            placeholder="Nama atau jenis kain"
             autoComplete="off"
             className={`w-full px-4 py-3 bg-butter-50 hover:bg-white focus:bg-white text-forest font-bold text-sm sm:text-base rounded-2xl border-2 ${
               errors.namaKain ? 'border-rose-500 bg-rose-50/40' : 'border-forest/20'
@@ -130,18 +130,18 @@ export default function UnifiedDataForm({
           )}
         </div>
 
-        {/* 3. Row: Ukuran (Meter) & Harga per Meter (NO contoh / misal text) */}
+        {/* 3. Row: Ukuran (Banyak / Meter) & Harga Satuan */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-          {/* Meter */}
+          {/* Meter / Banyak */}
           <div>
             <label className="block text-xs font-bold text-forest uppercase tracking-wider mb-1.5 flex items-center">
               <Ruler className="w-3.5 h-3.5 mr-1.5 text-forest/60" />
-              Ukuran (Meter) <span className="text-rose-600 ml-1">*</span>
+              Banyaknya (Meter) <span className="text-rose-600 ml-1">*</span>
             </label>
             <div className="relative">
               <input
                 {...login('meter', {
-                  required: 'Ukuran meter wajib diisi',
+                  required: 'Banyaknya meter wajib diisi',
                   min: { value: 0.1, message: 'Minimal 0.1 meter' },
                   valueAsNumber: true
                 })}
@@ -154,7 +154,7 @@ export default function UnifiedDataForm({
                 } focus:border-forest focus:ring-4 focus:ring-forest/10 outline-none transition-all placeholder:text-forest/30 placeholder:font-normal`}
               />
               <span className="absolute inset-y-0 right-0 pr-4 flex items-center text-xs font-black text-forest/50 pointer-events-none">
-                METER
+                MTR
               </span>
             </div>
             {errors.meter && (
@@ -166,7 +166,7 @@ export default function UnifiedDataForm({
           <div>
             <label className="block text-xs font-bold text-forest uppercase tracking-wider mb-1.5 flex items-center">
               <Tag className="w-3.5 h-3.5 mr-1.5 text-forest/60" />
-              Harga per Meter <span className="text-rose-600 ml-1">*</span>
+              Harga Satuan <span className="text-rose-600 ml-1">*</span>
             </label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-xs font-black text-forest/50 pointer-events-none">
@@ -174,7 +174,7 @@ export default function UnifiedDataForm({
               </span>
               <input
                 {...login('hargaSatuan', {
-                  required: 'Harga per meter wajib diisi',
+                  required: 'Harga satuan wajib diisi',
                   min: { value: 100, message: 'Minimal Rp 100' },
                   valueAsNumber: true
                 })}

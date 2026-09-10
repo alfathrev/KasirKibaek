@@ -1,11 +1,11 @@
 {
-  "name": "FlashKasir - POS Toko Kain",
-  "short_name": "FlashKasir",
-  "description": "Aplikasi Kasir POS Toko Kain Cepat & Cetak Struk Bluetooth Thermal 58mm",
+  "name": "Toko Kain Tiga Dara",
+  "short_name": "Tiga Dara",
+  "description": "Aplikasi POS Kasir & Cetak Nota Thermal Toko Kain Tiga Dara Boyolali",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#16a34a",
+  "background_color": "#FFEFB3",
+  "theme_color": "#013E37",
   "orientation": "portrait-primary",
   "icons": [
     {
