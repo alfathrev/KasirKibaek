@@ -41,7 +41,6 @@ export const formatItemRow = (item, useKNotation = true) => {
 
 /**
  * Formats the entire receipt string matching 58mm (32 chars/line) standard.
- * Ultra-compact spacing to save thermal paper.
  */
 export const generateReceiptText = (customerName, cartItems, printDate = null, useKNotation = true) => {
   const dateStr = printDate || getRealtimeDateString(true);
@@ -91,7 +90,7 @@ export const generateReceiptText = (customerName, cartItems, printDate = null, u
   lines.push(`${label}${rightPaddedTotal}`);
   lines.push(divider);
 
-  // Bottom Footer Messages (Rapat & hemat kertas)
+  // Bottom Footer Messages (Rapat & tertata)
   lines.push(padString('Maturnuwun', LINE_WIDTH, 'center'));
   lines.push(padString('Semoga Kita Selalu Diberi', LINE_WIDTH, 'center'));
   lines.push(padString('Kesehatan, Rejekinya Lancar', LINE_WIDTH, 'center'));
@@ -102,7 +101,7 @@ export const generateReceiptText = (customerName, cartItems, printDate = null, u
 
 /**
  * Converts a text string and ESC/POS commands into a binary Uint8Array.
- * Super compact feed spacing (hemat kertas, jarak sobek minimal).
+ * Uses calibrated 3-line tear feed so text clears the cutter/tear blade safely without truncation.
  */
 export const createEscPosBuffer = (customerName, cartItems, realtimeDate, useKNotation = true) => {
   const receiptText = generateReceiptText(customerName, cartItems, realtimeDate, useKNotation);
@@ -114,13 +113,12 @@ export const createEscPosBuffer = (customerName, cartItems, realtimeDate, useKNo
   const alignLeft = [ESC, 0x61, 0x00]; // Align left
   const lineSpacing = [ESC, 0x32]; // Default line spacing
   
-  // Minimal trailing newline (hanya 1 baris untuk sampai di pisau sobek printer 58mm)
   const encoder = new TextEncoder();
   const textBytes = encoder.encode(receiptText + '\n');
 
-  // Feed hanya 1 baris cukup agar pas di garis sobek tanpa membuang kertas
+  // Feed 3 baris: Jarak pas agar tulisan terbawah melewati pisau sobek printer tanpa terpotong
   const feedTear = [
-    ESC, 0x64, 0x01 // ESC d 1 (Feed 1 line)
+    ESC, 0x64, 0x03 // ESC d 3 (Feed 3 lines)
   ];
 
   // Combine commands and data
