@@ -52,12 +52,11 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 antialiased selection:bg-rose-500 selection:text-white">
-      {/* Top Navbar dengan Tombol Keranjang Lengket (Aman 100% dari keyboard HP) */}
+    <div className="min-h-screen bg-butter text-forest antialiased selection:bg-forest selection:text-butter">
+      {/* Top Navbar dengan Tombol Keranjang Lengket */}
       <Navbar
         cartItems={cartItems}
         onOpenCart={() => setIsCartOpen(true)}
-        bluetoothState={bluetoothState}
       />
 
       {/* Main Content Area */}
@@ -75,7 +74,7 @@ export default function App() {
           onAddItem={handleAddItem}
         />
 
-        {/* Ringkasan Keranjang Langsung di Halaman (Mudah dilihat setelah tambah barang) */}
+        {/* Ringkasan Keranjang Langsung di Halaman */}
         <InPageCartSummary
           cartItems={cartItems}
           onRemoveItem={handleRemoveItem}
