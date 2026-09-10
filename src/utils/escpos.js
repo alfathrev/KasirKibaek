@@ -41,7 +41,7 @@ export const formatItemRow = (item, useKNotation = true) => {
 
 /**
  * Formats the entire receipt string matching 58mm (32 chars/line) standard.
- * Exact template for "TOKO KAIN TIGA DARA" (one line title).
+ * Ultra-compact spacing to save thermal paper.
  */
 export const generateReceiptText = (customerName, cartItems, printDate = null, useKNotation = true) => {
   const dateStr = printDate || getRealtimeDateString(true);
@@ -54,7 +54,7 @@ export const generateReceiptText = (customerName, cartItems, printDate = null, u
 
   const lines = [];
 
-  // Header Toko Kain Tiga Dara (Satu baris digabung)
+  // Header Toko Kain Tiga Dara
   lines.push(doubleDivider);
   lines.push(padString('TOKO KAIN TIGA DARA', LINE_WIDTH, 'center'));
   lines.push(padString('Jl. Kemuning 32A, Pusung', LINE_WIDTH, 'center'));
@@ -69,7 +69,6 @@ export const generateReceiptText = (customerName, cartItems, printDate = null, u
   lines.push(divider);
 
   // Table Columns Header (Exactly 32 chars)
-  // Nama Barang(11) + ' '(1) + 'Banyak'(6) + ' '(1) + ' Harga'(6) + ' '(1) + 'Jumlah'(6) = 32
   const colHeader = `${padString('Nama Barang', 11, 'right')} ${padString('Banyak', 6, 'left')} ${padString('Harga', 6, 'left')} ${padString('Jumlah', 6, 'left')}`;
   lines.push(colHeader);
   lines.push(divider);
@@ -85,17 +84,15 @@ export const generateReceiptText = (customerName, cartItems, printDate = null, u
 
   lines.push(divider);
 
-  // Total Row (Left text: "Jumlah Rp.", Right: Grand total)
+  // Total Row
   const label = "Jumlah Rp.";
   const remainingSpace = LINE_WIDTH - label.length;
   const rightPaddedTotal = padString(grandTotalFormatted, remainingSpace, 'left');
   lines.push(`${label}${rightPaddedTotal}`);
   lines.push(divider);
 
-  // Bottom Footer Messages
-  lines.push('');
+  // Bottom Footer Messages (Rapat & hemat kertas)
   lines.push(padString('Maturnuwun', LINE_WIDTH, 'center'));
-  lines.push('');
   lines.push(padString('Semoga Kita Selalu Diberi', LINE_WIDTH, 'center'));
   lines.push(padString('Kesehatan, Rejekinya Lancar', LINE_WIDTH, 'center'));
   lines.push(padString('Dan Umur Yang Barokah', LINE_WIDTH, 'center'));
@@ -105,26 +102,25 @@ export const generateReceiptText = (customerName, cartItems, printDate = null, u
 
 /**
  * Converts a text string and ESC/POS commands into a binary Uint8Array.
- * Optimized feed spacing to prevent huge blank gaps.
+ * Super compact feed spacing (hemat kertas, jarak sobek minimal).
  */
 export const createEscPosBuffer = (customerName, cartItems, realtimeDate, useKNotation = true) => {
   const receiptText = generateReceiptText(customerName, cartItems, realtimeDate, useKNotation);
 
   // ESC/POS Commands
   const ESC = 0x1b;
-  const GS = 0x1d;
 
   const init = [ESC, 0x40]; // ESC @ (Initialize printer)
   const alignLeft = [ESC, 0x61, 0x00]; // Align left
   const lineSpacing = [ESC, 0x32]; // Default line spacing
   
-  // Convert text string to bytes with compact trailing feed (2 newlines instead of 5)
+  // Minimal trailing newline (hanya 1 baris untuk sampai di pisau sobek printer 58mm)
   const encoder = new TextEncoder();
-  const textBytes = encoder.encode(receiptText + '\n\n');
+  const textBytes = encoder.encode(receiptText + '\n');
 
-  const feedCut = [
-    ESC, 0x64, 0x02, // ESC d 2 (Feed 2 lines for clean paper tear-off)
-    GS, 0x56, 0x42, 0x00 // Partial cut if supported
+  // Feed hanya 1 baris cukup agar pas di garis sobek tanpa membuang kertas
+  const feedTear = [
+    ESC, 0x64, 0x01 // ESC d 1 (Feed 1 line)
   ];
 
   // Combine commands and data
@@ -133,7 +129,7 @@ export const createEscPosBuffer = (customerName, cartItems, realtimeDate, useKNo
     ...alignLeft,
     ...lineSpacing,
     ...textBytes,
-    ...feedCut
+    ...feedTear
   ]);
 
   return {
