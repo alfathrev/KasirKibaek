@@ -1,5 +1,5 @@
 /**
- * Formatting utilities for FlashKasir POS
+ * Formatting utilities for FlashKasir / Toko Kain Tiga Dara
  */
 
 export const formatRupiah = (num) => {
@@ -22,7 +22,20 @@ export const formatMeter = (val) => {
   }
   const num = Number(val);
   if (isNaN(num)) return '0';
-  return num.toString();
+  // Avoid floating point precision issues like 3.4400000000000004
+  const rounded = Math.round((num + Number.EPSILON) * 100) / 100;
+  return rounded.toString();
+};
+
+/**
+ * Format total meter value cleanly without floating point artifacts
+ */
+export const formatTotalMeter = (val) => {
+  if (val === null || val === undefined || val === '') return '0';
+  const num = Number(val);
+  if (isNaN(num)) return '0';
+  const rounded = Math.round((num + Number.EPSILON) * 100) / 100;
+  return rounded.toString();
 };
 
 /**

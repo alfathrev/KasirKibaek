@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Trash2, Printer, Scissors, FileText, ChevronDown, ChevronUp } from 'lucide-react';
-import { formatRupiah, formatNumber, formatMeter, getRealtimeDateString } from '../utils/formatters';
+import { formatRupiah, formatNumber, formatMeter, formatTotalMeter, getRealtimeDateString } from '../utils/formatters';
 import { generateReceiptText, createEscPosBuffer } from '../utils/escpos';
 
 export default function CartModal({
@@ -183,7 +183,7 @@ export default function CartModal({
         {cartItems.length > 0 && (
           <div className="p-5 sm:p-6 border-t border-forest/10 bg-butter-50 space-y-4">
             <div className="flex items-center justify-between text-sm font-bold text-forest">
-              <span className="text-forest/80">Total ({cartItems.length} Kain • {formatMeter(totalMeters)}m)</span>
+              <span className="text-forest/80">Total ({cartItems.length} Kain • {formatTotalMeter(totalMeters)}m)</span>
               <span className="text-xl font-black text-forest">{formatRupiah(grandTotal)}</span>
             </div>
 

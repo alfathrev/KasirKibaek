@@ -41,7 +41,7 @@ export const formatItemRow = (item, useKNotation = true) => {
 
 /**
  * Formats the entire receipt string matching 58mm (32 chars/line) standard.
- * Exact template based on "TOKO KAIN TIGA DARA" physical receipt.
+ * Exact template for "TOKO KAIN TIGA DARA" (without komplek MTsN).
  */
 export const generateReceiptText = (customerName, cartItems, printDate = null, useKNotation = true) => {
   const dateStr = printDate || getRealtimeDateString(true);
@@ -60,7 +60,6 @@ export const generateReceiptText = (customerName, cartItems, printDate = null, u
   lines.push(padString('TIGA DARA', LINE_WIDTH, 'center'));
   lines.push(padString('Jl. Kemuning 32A, Pusung', LINE_WIDTH, 'center'));
   lines.push(padString('Boyolali', LINE_WIDTH, 'center'));
-  lines.push(padString('(Komplek MTsN Boyolali)', LINE_WIDTH, 'center'));
   lines.push(padString('WA. 082 220 200 676', LINE_WIDTH, 'center'));
   lines.push(doubleDivider);
 
@@ -107,6 +106,7 @@ export const generateReceiptText = (customerName, cartItems, printDate = null, u
 
 /**
  * Converts a text string and ESC/POS commands into a binary Uint8Array.
+ * Optimized feed spacing to prevent huge blank gaps.
  */
 export const createEscPosBuffer = (customerName, cartItems, realtimeDate, useKNotation = true) => {
   const receiptText = generateReceiptText(customerName, cartItems, realtimeDate, useKNotation);
@@ -119,12 +119,12 @@ export const createEscPosBuffer = (customerName, cartItems, realtimeDate, useKNo
   const alignLeft = [ESC, 0x61, 0x00]; // Align left
   const lineSpacing = [ESC, 0x32]; // Default line spacing
   
-  // Convert text string to bytes
+  // Convert text string to bytes with compact trailing feed (2 newlines instead of 5)
   const encoder = new TextEncoder();
-  const textBytes = encoder.encode(receiptText + '\n\n\n\n\n'); // Add feed lines
+  const textBytes = encoder.encode(receiptText + '\n\n');
 
   const feedCut = [
-    ESC, 0x64, 0x03, // ESC d 3 (Feed 3 lines)
+    ESC, 0x64, 0x02, // ESC d 2 (Feed 2 lines for clean paper tear-off)
     GS, 0x56, 0x42, 0x00 // Partial cut if supported
   ];
 

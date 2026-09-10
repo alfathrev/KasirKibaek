@@ -1,6 +1,6 @@
 import React from 'react';
 import { ShoppingBag, Scissors, Trash2, Printer, ArrowRight } from 'lucide-react';
-import { formatRupiah, formatNumber, formatMeter } from '../utils/formatters';
+import { formatRupiah, formatNumber, formatMeter, formatTotalMeter } from '../utils/formatters';
 
 export default function InPageCartSummary({
   cartItems,
@@ -24,7 +24,7 @@ export default function InPageCartSummary({
             <h3 className="text-base font-black text-forest">
               Keranjang ({cartItems.length} Kain)
             </h3>
-            <p className="text-xs text-forest/70 font-medium">Total: {formatMeter(totalMeters)} meter</p>
+            <p className="text-xs text-forest/70 font-medium">Total: {formatTotalMeter(totalMeters)} meter</p>
           </div>
         </div>
 
