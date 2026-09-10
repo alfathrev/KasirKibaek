@@ -24,14 +24,15 @@ export const padString = (str, length, direction = 'right') => {
 /**
  * Builds a 32-character line for an item in 4 columns:
  * 1. Nama Barang (11 chars, left-aligned)
- * 2. Banyak (6 chars, right-aligned)
+ * 2. Banyak (6 chars, right-aligned) e.g. " 2.10m"
  * 3. Harga (6 chars, right-aligned)
  * 4. Jumlah (6 chars, right-aligned)
  * Separated by 1 space each (11 + 1 + 6 + 1 + 6 + 1 + 6 = 32)
  */
 export const formatItemRow = (item, useKNotation = true) => {
   const name = padString(item.namaKain || 'Kain', 11, 'right');
-  const mtr = padString(`${formatMeter(item.meter)}m`, 6, 'left');
+  const mtrFormatted = formatMeter(item.meter);
+  const mtr = padString(`${mtrFormatted}m`, 6, 'left');
   const hrg = padString(formatCompactPrice(item.hargaSatuan, useKNotation), 6, 'left');
   const jml = padString(formatCompactPrice(item.jumlah, useKNotation), 6, 'left');
 

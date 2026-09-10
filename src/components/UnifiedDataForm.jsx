@@ -8,7 +8,7 @@ export default function UnifiedDataForm({
   setCustomerName,
   onAddItem
 }) {
-  // Helper to parse number supporting BOTH dot (.) and comma (,) e.g. 2.1 or 2,1
+  // Helper to parse decimal number supporting both comma and dot
   const parseDecimal = (val) => {
     if (val === null || val === undefined || val === '') return 0;
     if (typeof val === 'number') return val;
@@ -40,11 +40,12 @@ export default function UnifiedDataForm({
   const previewJumlah = meterNum * hargaNum;
 
   const onSubmit = (data) => {
-    const meterVal = parseDecimal(data.meter);
+    const rawMeterStr = String(data.meter).trim().replace(',', '.');
+    const meterVal = parseFloat(rawMeterStr);
     const hargaVal = parseDecimal(data.hargaSatuan);
     
     if (isNaN(meterVal) || meterVal <= 0) {
-      alert('Ukuran meter harus lebih besar dari 0 (bisa menggunakan titik 2.1 atau koma 2,1)');
+      alert('Ukuran meter harus lebih besar dari 0');
       return;
     }
     if (isNaN(hargaVal) || hargaVal < 0) {
@@ -55,7 +56,8 @@ export default function UnifiedDataForm({
     onAddItem({
       id: Date.now() + Math.random().toString(36).substring(2, 6),
       namaKain: data.namaKain.trim(),
-      meter: meterVal,
+      meter: rawMeterStr, // Menyimpan format asli seperti "2.10"
+      meterVal: meterVal,
       hargaSatuan: hargaVal,
       jumlah: meterVal * hargaVal
     });
@@ -140,7 +142,7 @@ export default function UnifiedDataForm({
 
         {/* 3. Row: Ukuran (Banyak / Meter) & Harga Satuan */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-          {/* Meter / Banyak - Mendukung titik (.) maupun koma (,) */}
+          {/* Meter / Banyak */}
           <div>
             <label className="block text-xs font-bold text-forest uppercase tracking-wider mb-1.5 flex items-center">
               <Ruler className="w-3.5 h-3.5 mr-1.5 text-forest/60" />

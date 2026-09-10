@@ -12,16 +12,21 @@ export const formatNumber = (num) => {
   return Number(num).toLocaleString('id-ID');
 };
 
-export const formatMeter = (num) => {
-  if (num === null || num === undefined || isNaN(num)) return '0';
-  const val = Number(num);
-  // If integer, e.g. 1 -> 1.0 or 1 depending on style; let's format cleanly
-  return Number.isInteger(val) ? val.toFixed(1) : val.toString();
+/**
+ * Format meter value, preserving exact user-input strings like "2.10"
+ */
+export const formatMeter = (val) => {
+  if (val === null || val === undefined || val === '') return '0';
+  if (typeof val === 'string') {
+    return val.trim().replace(',', '.');
+  }
+  const num = Number(val);
+  if (isNaN(num)) return '0';
+  return num.toString();
 };
 
 /**
  * Format compact price for receipts (e.g. 35000 -> 35k, 87500 -> 87.5k)
- * or returns standard formatted string if compact is false.
  */
 export const formatCompactPrice = (num, useK = true) => {
   const val = Number(num);
@@ -37,7 +42,7 @@ export const formatCompactPrice = (num, useK = true) => {
 };
 
 /**
- * Real-time date format for thermal receipts (e.g. 10/09/2026 15:30 or 10/09/2026)
+ * Real-time date format for thermal receipts
  */
 export const getRealtimeDateString = (includeTime = true) => {
   const now = new Date();

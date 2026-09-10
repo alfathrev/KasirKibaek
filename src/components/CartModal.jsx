@@ -19,7 +19,7 @@ export default function CartModal({
 
   if (!isOpen) return null;
 
-  const totalMeters = cartItems.reduce((acc, item) => acc + (Number(item.meter) || 0), 0);
+  const totalMeters = cartItems.reduce((acc, item) => acc + (parseFloat(item.meterVal || item.meter) || 0), 0);
   const grandTotal = cartItems.reduce((acc, item) => acc + (Number(item.jumlah) || 0), 0);
 
   const previewDate = getRealtimeDateString(true);
