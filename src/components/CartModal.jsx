@@ -23,7 +23,7 @@ export default function CartModal({
   const grandTotal = cartItems.reduce((acc, item) => acc + (Number(item.jumlah) || 0), 0);
 
   const previewDate = getRealtimeDateString(true);
-  const receiptPreviewText = generateReceiptText(customerName, cartItems, previewDate, true);
+  const receiptPreviewText = generateReceiptText(customerName, cartItems, previewDate);
 
   const handlePrint = async () => {
     if (cartItems.length === 0) {
@@ -46,7 +46,7 @@ export default function CartModal({
     }
 
     try {
-      const { binaryBuffer } = createEscPosBuffer(customerName, cartItems, realtimeClickDate, true);
+      const { binaryBuffer } = createEscPosBuffer(customerName, cartItems, realtimeClickDate);
       await printBuffer(binaryBuffer);
 
       onNotify?.('Nota berhasil dicetak ke printer!', 'success');

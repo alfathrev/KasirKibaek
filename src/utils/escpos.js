@@ -1,4 +1,4 @@
-import { formatCompactPrice, formatMeter, getRealtimeDateString } from './formatters';
+import { formatNumber, formatMeter, formatTotalMeter, getRealtimeDateString } from './formatters';
 
 export const LINE_WIDTH = 32;
 
@@ -22,34 +22,39 @@ export const padString = (str, length, direction = 'right') => {
 };
 
 /**
- * Builds a 32-character line for an item in 4 columns:
- * 1. Nama Barang (11 chars, left-aligned)
- * 2. Banyak (6 chars, right-aligned) e.g. " 2.10m"
- * 3. Harga (6 chars, right-aligned)
- * 4. Jumlah (6 chars, right-aligned)
- * Separated by 1 space each (11 + 1 + 6 + 1 + 6 + 1 + 6 = 32)
+ * Formats an item into 2 lines (matching modern retail receipts):
+ * Line 1: Nama Barang (full width, up to 32 chars)
+ * Line 2:    [Meter]m X @[Harga Satuan]      :   [Subtotal]
  */
-export const formatItemRow = (item, useKNotation = true) => {
-  const name = padString(item.namaKain || 'Kain', 11, 'right');
-  const mtrFormatted = formatMeter(item.meter);
-  const mtr = padString(`${mtrFormatted}m`, 6, 'left');
-  const hrg = padString(formatCompactPrice(item.hargaSatuan, useKNotation), 6, 'left');
-  const jml = padString(formatCompactPrice(item.jumlah, useKNotation), 6, 'left');
+export const formatItemTwoLines = (item) => {
+  const rawName = String(item.namaKain || 'Kain').trim().toUpperCase();
+  const nameLine = padString(rawName, LINE_WIDTH, 'right');
 
-  return `${name} ${mtr} ${hrg} ${jml}`;
+  const mtrFormatted = formatMeter(item.meter);
+  const leftDetail = `   ${mtrFormatted}m X @${formatNumber(item.hargaSatuan)}`;
+  const rightDetail = `:   ${formatNumber(item.jumlah)}`;
+
+  // Calculate spaces between leftDetail and rightDetail to equal exactly 32 chars
+  const neededSpaces = LINE_WIDTH - leftDetail.length - rightDetail.length;
+  const spaces = ' '.repeat(Math.max(1, neededSpaces));
+  const detailLine = `${leftDetail}${spaces}${rightDetail}`;
+
+  return `${nameLine}\n${detailLine}`;
 };
 
 /**
  * Formats the entire receipt string matching 58mm (32 chars/line) standard.
+ * Layout: 2-line item rows without column headers.
  */
-export const generateReceiptText = (customerName, cartItems, printDate = null, useKNotation = true) => {
+export const generateReceiptText = (customerName, cartItems, printDate = null) => {
   const dateStr = printDate || getRealtimeDateString(true);
   const custName = (customerName && customerName.trim()) ? customerName.trim().toUpperCase() : 'UMUM / CASH';
   const divider = '-'.repeat(LINE_WIDTH);
   const doubleDivider = '='.repeat(LINE_WIDTH);
 
+  const totalMeters = cartItems.reduce((acc, item) => acc + (parseFloat(item.meterVal || item.meter) || 0), 0);
   const grandTotal = cartItems.reduce((acc, item) => acc + (Number(item.jumlah) || 0), 0);
-  const grandTotalFormatted = String(grandTotal);
+  const grandTotalFormatted = formatNumber(grandTotal);
 
   const lines = [];
 
@@ -67,30 +72,28 @@ export const generateReceiptText = (customerName, cartItems, printDate = null, u
   lines.push(`Tuan/Toko: ${custName}`);
   lines.push(divider);
 
-  // Table Columns Header (Exactly 32 chars)
-  const colHeader = `${padString('Nama Barang', 11, 'right')} ${padString('Banyak', 6, 'left')} ${padString('Harga', 6, 'left')} ${padString('Jumlah', 6, 'left')}`;
-  lines.push(colHeader);
-  lines.push(divider);
-
-  // Items
+  // Items (2 Lines per item, no column headers)
   if (cartItems.length === 0) {
-    lines.push(padString('Belum ada barang', LINE_WIDTH, 'right'));
+    lines.push(padString('Belum ada barang', LINE_WIDTH, 'center'));
   } else {
     for (const item of cartItems) {
-      lines.push(formatItemRow(item, useKNotation));
+      lines.push(formatItemTwoLines(item));
     }
   }
 
   lines.push(divider);
 
-  // Total Row
-  const label = "Jumlah Rp.";
-  const remainingSpace = LINE_WIDTH - label.length;
+  // Summary & Grand Total
+  lines.push(`Total Item  : ${cartItems.length} Kain`);
+  lines.push(`Total Meter : ${formatTotalMeter(totalMeters)}m`);
+  
+  const totalLabel = "Jumlah Rp.";
+  const remainingSpace = LINE_WIDTH - totalLabel.length;
   const rightPaddedTotal = padString(grandTotalFormatted, remainingSpace, 'left');
-  lines.push(`${label}${rightPaddedTotal}`);
+  lines.push(`${totalLabel}${rightPaddedTotal}`);
   lines.push(divider);
 
-  // Bottom Footer Messages (Rapat & tertata)
+  // Bottom Footer Messages
   lines.push(padString('Maturnuwun', LINE_WIDTH, 'center'));
   lines.push(padString('Semoga Kita Selalu Diberi', LINE_WIDTH, 'center'));
   lines.push(padString('Kesehatan, Rejekinya Lancar', LINE_WIDTH, 'center'));
@@ -101,10 +104,10 @@ export const generateReceiptText = (customerName, cartItems, printDate = null, u
 
 /**
  * Converts a text string and ESC/POS commands into a binary Uint8Array.
- * Uses calibrated 3-line tear feed so text clears the cutter/tear blade safely without truncation.
+ * Calibrated 3-line tear feed.
  */
-export const createEscPosBuffer = (customerName, cartItems, realtimeDate, useKNotation = true) => {
-  const receiptText = generateReceiptText(customerName, cartItems, realtimeDate, useKNotation);
+export const createEscPosBuffer = (customerName, cartItems, realtimeDate) => {
+  const receiptText = generateReceiptText(customerName, cartItems, realtimeDate);
 
   // ESC/POS Commands
   const ESC = 0x1b;
@@ -116,9 +119,9 @@ export const createEscPosBuffer = (customerName, cartItems, realtimeDate, useKNo
   const encoder = new TextEncoder();
   const textBytes = encoder.encode(receiptText + '\n');
 
-  // Feed 3 baris: Jarak pas agar tulisan terbawah melewati pisau sobek printer tanpa terpotong
+  // Feed 3 baris pas di pisau sobek
   const feedTear = [
-    ESC, 0x64, 0x03 // ESC d 3 (Feed 3 lines)
+    ESC, 0x64, 0x03 // ESC d 3
   ];
 
   // Combine commands and data

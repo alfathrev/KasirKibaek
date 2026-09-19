@@ -15,7 +15,7 @@ export default function ReceiptPreview({
 
   // Pratinjau nota live
   const previewDate = getRealtimeDateString(true);
-  const receiptPreviewText = generateReceiptText(customerName, cartItems, previewDate, true);
+  const receiptPreviewText = generateReceiptText(customerName, cartItems, previewDate);
   const grandTotal = cartItems.reduce((acc, item) => acc + (Number(item.jumlah) || 0), 0);
 
   const handlePrint = async () => {
@@ -41,7 +41,7 @@ export default function ReceiptPreview({
 
     try {
       // Buat binary buffer ESC/POS
-      const { binaryBuffer } = createEscPosBuffer(customerName, cartItems, realtimeClickDate, true);
+      const { binaryBuffer } = createEscPosBuffer(customerName, cartItems, realtimeClickDate);
       await printBuffer(binaryBuffer);
 
       onNotify?.('Nota berhasil dicetak ke printer!', 'success');
